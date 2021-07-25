@@ -15,6 +15,7 @@ public class GlobalKeyListener implements NativeKeyListener {
 
     public GlobalKeyListener(SoundRecognizer soundRecognizer) {
         this.soundRecognizer = soundRecognizer;
+        soundRecognizer.startResourcesThread();
     }
 
     public void nativeKeyPressed(NativeKeyEvent e) {
@@ -24,9 +25,7 @@ public class GlobalKeyListener implements NativeKeyListener {
             System.out.println("Ctrl pressed");
 
             // Start recognition process pruning previously cached data.
-            liveSpeechRecognizer.startRecognition(true);
-            System.out.println("Start talking");
-            result = liveSpeechRecognizer.getResult();
+            soundRecognizer.startSpeechRecognition();
         }
     }
 
@@ -36,15 +35,6 @@ public class GlobalKeyListener implements NativeKeyListener {
         if (e.getKeyCode() == NativeKeyEvent.VC_CONTROL_L || e.getKeyCode() == NativeKeyEvent.VC_CONTROL_R) {
             System.out.println("Ctrl released");
 
-            liveSpeechRecognizer.stopRecognition();
-            System.out.println("Stop talking");
-            // Print utterance string without filler words.
-            System.out.println(result.getHypothesis());
-
-            // Get individual words and their times.
-            //for (WordResult r : result.getWords()) {
-            //    System.out.println(r);
-            //}
         }
     }
 
