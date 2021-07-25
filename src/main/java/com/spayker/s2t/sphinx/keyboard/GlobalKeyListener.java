@@ -1,5 +1,6 @@
 package com.spayker.s2t.sphinx.keyboard;
 
+import com.spayker.s2t.sphinx.recognition.SoundRecognizer;
 import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import edu.cmu.sphinx.api.SpeechResult;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -7,13 +8,13 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 public class GlobalKeyListener implements NativeKeyListener {
 
-    private LiveSpeechRecognizer liveSpeechRecognizer;
+    private SoundRecognizer soundRecognizer;
     private SpeechResult result;
 
     private GlobalKeyListener() { }
 
-    public GlobalKeyListener(LiveSpeechRecognizer liveSpeechRecognizer) {
-        this.liveSpeechRecognizer = liveSpeechRecognizer;
+    public GlobalKeyListener(SoundRecognizer soundRecognizer) {
+        this.soundRecognizer = soundRecognizer;
     }
 
     public void nativeKeyPressed(NativeKeyEvent e) {
