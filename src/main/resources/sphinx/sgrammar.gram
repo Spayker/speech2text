@@ -16,4 +16,4 @@ public <number> = ( zero | one | two | three | four | five | six | seven | nine 
 		            hundred | thousand | million | billion)+;
 public <syntax> = <number>{1} (plus | minus | multiply | division){1} <number>{1};
 
-public <repo> = ( status | fetch | git | git status );
+public <repo> = ( status | fetch | git status | git commit | git push);
