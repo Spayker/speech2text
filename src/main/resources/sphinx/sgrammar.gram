@@ -11,3 +11,4 @@ public <number> = ( zero | one | two | three | four | five | six | seven | nine 
 		            hundred | thousand | million | billion)+;
 
 public <repo> = ( git status | git commit | git add | git push);
+public <filesystem> = ( cd disk E | cd disk D | cd disk C );
