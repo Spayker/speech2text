@@ -9,12 +9,15 @@ it works according to grammar file that can be recognized as an artificial vocab
 
 ## Project structure
 
-Consists of few components:
+Consists of couple components:
 1) sphinx4 - voice recognition library
 2) jnativehook - keyboard listener
 
 ## How to use
-Simply add all words/phrases you are going to use into sgrammar file and run the application.
-Hold left ctrl button and start talking those phrases from gram file. Results can be found in
-console output.
+Simply add all words/phrases you are going to use into sgrammar file (resources/sphinx folder) and 
+run the application. Hold left ctrl button and start talking those phrases from gram file. 
+Results can be found in console output.
 
+## Links
+Sphinx off. - https://github.com/cmusphinx
+Jnativehook off. - https://github.com/kwhat/jnativehook
