@@ -19,5 +19,5 @@ run the application. Hold left ctrl button and start talking those phrases from 
 Results can be found in console output.
 
 ## Links
-Sphinx off. - https://github.com/cmusphinx
+Sphinx off. - https://github.com/cmusphinx </br>
 Jnativehook off. - https://github.com/kwhat/jnativehook
