@@ -6,5 +6,6 @@
 
 grammar grammar;
 
-public <repo> = ( git status | git commit | git add | git push);
+public <repo> = ( git | git status | git commit | git add | git push | git checkout | git clone);
+public <buffer> = (copy | paste);
 public <filesystem> = ( disk E | disk D | disk C );

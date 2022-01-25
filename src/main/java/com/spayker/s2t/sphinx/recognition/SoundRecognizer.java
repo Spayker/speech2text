@@ -9,10 +9,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class SoundRecognizer {
 
-    private final LiveSpeechRecognizer recognizer;
+    private LiveSpeechRecognizer recognizer;
 
     /**
      * Checks if the speech recognise is already running
@@ -20,6 +22,45 @@ public class SoundRecognizer {
     private boolean speechRecognizerThreadRunning;
 
     private String speechRecognitionResult;
+
+    private final Runnable task = () -> {
+        //locks
+        setSpeechRecognizerThreadRunning(true);
+
+        //Start Recognition
+        recognizer.startRecognition(false);
+
+        //Information
+        System.out.println("You can start to speak...");
+
+        try {
+            while (speechRecognizerThreadRunning) {
+                /*
+                 * This method will return when the end of speech is reached. Note that the end pointer will determine the end of speech.
+                 */
+                SpeechResult speechResult = recognizer.getResult();
+                //Check the result
+                if (speechResult == null) {
+                    System.out.println("I can't understand what you said.");
+                } else {
+                    //Get the hypothesis
+                    speechRecognitionResult = speechResult.getHypothesis();
+
+                    //You said?
+                    System.out.println("You said: [" + speechRecognitionResult + "]\n");
+
+                    //Call the appropriate method
+                    makeDecision(speechRecognitionResult, speechResult.getWords());
+                    recognizer.stopRecognition();
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            speechRecognizerThreadRunning = false;
+            recognizer.stopRecognition();
+        }
+        System.out.println("SpeechThread has exited...");
+    };
 
     /**
      * This executor service is used in order the playerState events to be executed in an order
@@ -40,48 +81,18 @@ public class SoundRecognizer {
 
     public synchronized void startSpeechRecognition() {
 
+        int activeTaskCount = ((ThreadPoolExecutor) eventsExecutorService).getActiveCount();
+
+        if(activeTaskCount > 0){
+            ((ThreadPoolExecutor)eventsExecutorService).remove(task);
+        }
+
         //Check lock
         if (speechRecognizerThreadRunning) {
             System.out.println("Speech Recognition Thread already running...");
         } else {
             //Submit to ExecutorService
-            eventsExecutorService.submit(() -> {
-
-                //locks
-                setSpeechRecognizerThreadRunning(true);
-
-                //Start Recognition
-                recognizer.startRecognition(true);
-
-                //Information
-                System.out.println("You can start to speak...");
-
-                try {
-                    while (speechRecognizerThreadRunning) {
-                        /*
-                         * This method will return when the end of speech is reached. Note that the end pointer will determine the end of speech.
-                         */
-                        SpeechResult speechResult = recognizer.getResult();
-                        //Check the result
-                        if (speechResult == null) {
-                            System.out.println("I can't understand what you said.");
-                        } else {
-                            //Get the hypothesis
-                            speechRecognitionResult = speechResult.getHypothesis();
-
-                            //You said?
-                            System.out.println("You said: [" + speechRecognitionResult + "]\n");
-
-                            //Call the appropriate method
-                            makeDecision(speechRecognitionResult, speechResult.getWords());
-                        }
-                    }
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
-                    speechRecognizerThreadRunning = false;
-                }
-                System.out.println("SpeechThread has exited...");
-            });
+            eventsExecutorService.submit(task);
         }
     }
 
@@ -93,4 +104,6 @@ public class SoundRecognizer {
     public synchronized void setSpeechRecognizerThreadRunning(boolean speechRecognizerThreadRunning) {
         this.speechRecognizerThreadRunning = speechRecognizerThreadRunning;
     }
+
+
 }
